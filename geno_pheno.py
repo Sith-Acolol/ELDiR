@@ -323,13 +323,31 @@ def clean_weights(weights_dir, loss_file):
     invalid = get_invalid_robots(loss)
     sorted_robots = loss.min(1).argsort()
     sorted_robots = np.array([i for i in sorted_robots if i not in invalid])
-    top25 = sorted_robots[:25]
-    random75 = np.random.choice(sorted_robots[25:], 75, replace=False)
-    save = np.concatenate((top25, random75))
-    assert len(set(save)) == len(save) == 100
+
+    # Number of robots to save
+    top_n = 25
+    random_n = 75
+    total_n = top_n + random_n
+
+    # Adjust if the total number of robots is less than the desired number to save
+    if len(sorted_robots) <= total_n:
+        top_robots = sorted_robots[:top_n]
+        random_robots = sorted_robots[top_n:]
+        save = sorted_robots
+    else:
+        top_robots = sorted_robots[:top_n]
+        random_robots = np.random.choice(sorted_robots[top_n:], random_n, replace=False)
+        save = np.concatenate((top_robots, random_robots))
+
+    print(f"Keeping {len(top_robots)} top robots and {len(random_robots)} random robots", flush=True)
+    print(f"Total robots to save: {len(save)}", flush=True)
+
     for i in range(loss.shape[0]):
         if i not in save:
-            shutil.rmtree(os.path.join(weights_dir, str(i)))
+            robot_weights_dir = os.path.join(weights_dir, str(i))
+            if os.path.exists(robot_weights_dir):
+                shutil.rmtree(robot_weights_dir)
+                print(f"Removed weights for robot {i}", flush=True)
 
 def next_gen(loss, child_loss, robots, child_robots, out_robots_file, out_loss_file, progbar):
     ## Combine the best parents and children to form the next generation

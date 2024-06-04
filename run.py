@@ -42,9 +42,11 @@ def merge_losses(gen_dir, outfile):
     for i in range(n_workers):
         start, end = worker_indices[i]
         loss_file = os.path.join(gen_dir, f'loss_{start}-{end}.npy')
+        print(f"Checking for loss file: {loss_file}", flush=True)
         assert os.path.exists(loss_file)
         losses.append(np.load(loss_file))
     losses = np.concatenate(losses)
+    print(f"Losses shape: {losses.shape}, Expected: ({n_robots}, {iters+1})", flush=True)  
     assert losses.shape[0] == n_robots
     assert losses.shape[1] == iters+1
     np.save(outfile, losses)
@@ -86,6 +88,8 @@ def run_gpu_workers(robots_file, outdir):
     for i, p in enumerate(processes):
         p.join()
         print(f"Process {i} joined", flush=True)
+    
+    print(f"Contents of {outdir}: {os.listdir(outdir)}", flush=True)
 
 def loop(init_generation, init_gen_dir, robots, loss, child_robots, child_loss=None):
     global progbar, robots_fname, child_robots_fname, loss_file, child_loss_file
@@ -185,7 +189,7 @@ if __name__ == '__main__':
     parser.add_argument('--outdir', type=str, default='run-out', help='Output directory (default: run-out)')
     parser.add_argument('--ckptdir', type=str, default=None, help='(load from) Checkpoint directory (default: None)')
     parser.add_argument('--gpu_ids', type=str, default="0", help='GPU IDs to parallelize on (comma separated). E.g. "0,1,2,3". (default: 0)')
-    parser.add_argument('--n_robots', type=int, default=1000, help='Population size (default: 1000). Must be >= 100.')
+    parser.add_argument('--n_robots', type=int, default=100, help='Population size (default: 100). Must be >= 100.')
     parser.add_argument('--iters', type=int, default=35, help='Number of learning iterations (default: 35)')
     parser.add_argument('--worker_script', type=str, default='./sim.py', help='GPU worker script (default: ./sim.py)')
     parser.add_argument('--no_progbar', default=False, action='store_true', help='Disable progress bar (default: False)')

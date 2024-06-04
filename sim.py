@@ -409,6 +409,7 @@ def optimize():
     print(f"Optimizing {iters} iterations for {steps} steps...", flush=True)
 
     weights_dir = os.path.join(outdir, "weights")
+    os.makedirs(weights_dir, exist_ok=True)
 
     ## Tracking loss trajectories and best performance so far
     loss_hist = np.zeros((n_robots, iters+1))
@@ -439,6 +440,7 @@ def optimize():
     ## Save final losses
     loss_save_path = os.path.join(outdir, f"loss_{idx0}-{idx1}.npy")
     np.save(loss_save_path, loss_hist)
+    print(f"Saved loss file: {loss_save_path}", flush=True)
 
 if __name__ == '__main__':
 
