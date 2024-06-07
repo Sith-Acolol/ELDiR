@@ -1,0 +1,31 @@
+Using CUDA_VISIBLE_DEVICES=0
+[Taichi] Starting on arch=cuda
+Writing losses to run-out\36
+Random seed: 717896088
+Loading robots [0, 100) into Taichi from run-out\36\child_robots.pkl...
+n_robots: 100, max_objects: 40, max_springs: 77
+Robot states loaded...
+Initializing weights...
+Optimizing 35 iterations for 1000 steps...
+Traceback (most recent call last):
+  File "C:\Users\samfu\OneDrive\Documents\GitHub\ELDiR\sim.py", line 503, in <module>
+    optimize()
+  File "C:\Users\samfu\OneDrive\Documents\GitHub\ELDiR\sim.py", line 419, in optimize
+    save_weights(weights_dir, np.arange(n_robots), idx0, "init")
+  File "C:\Users\samfu\OneDrive\Documents\GitHub\ELDiR\sim.py", line 350, in save_weights
+    w1 = weights1.to_numpy()
+         ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\samfu\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\taichi\lang\util.py", line 334, in wrapped
+    return func(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\samfu\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\taichi\lang\field.py", line 307, in to_numpy
+    tensor_to_ext_arr(self, arr)
+  File "C:\Users\samfu\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\taichi\lang\kernel_impl.py", line 1113, in wrapped
+    return primal(*args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\samfu\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\taichi\lang\kernel_impl.py", line 1045, in __call__
+    return self.launch_kernel(kernel_cpp, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\samfu\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\taichi\lang\kernel_impl.py", line 971, in launch_kernel
+    prog.launch_kernel(compiled_kernel_data, launch_ctx)
+KeyboardInterrupt

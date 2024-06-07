@@ -5,6 +5,7 @@ def make_gen_dir(gen):
     ## Create directory for the next generation
     global outdir, n_robots, weights_dir_name
     gen_dir = os.path.join(outdir, str(gen))
+    print(f"Creating directory for generation {gen}: {gen_dir}", flush=True)
     os.makedirs(gen_dir, exist_ok=True)
     os.makedirs(os.path.join(gen_dir, weights_dir_name), exist_ok=True)
     for i in range(n_robots):
@@ -43,10 +44,12 @@ def merge_losses(gen_dir, outfile):
         start, end = worker_indices[i]
         loss_file = os.path.join(gen_dir, f'loss_{start}-{end}.npy')
         print(f"Checking for loss file: {loss_file}", flush=True)
+        if not os.path.exists(loss_file):
+            print(f"Loss file {loss_file} not found!", flush=True)
         assert os.path.exists(loss_file)
         losses.append(np.load(loss_file))
     losses = np.concatenate(losses)
-    print(f"Losses shape: {losses.shape}, Expected: ({n_robots}, {iters+1})", flush=True)  
+    print(f"Losses shape: {losses.shape}, Expected: ({n_robots}, {iters+1})", flush=True)
     assert losses.shape[0] == n_robots
     assert losses.shape[1] == iters+1
     np.save(outfile, losses)
@@ -88,8 +91,6 @@ def run_gpu_workers(robots_file, outdir):
     for i, p in enumerate(processes):
         p.join()
         print(f"Process {i} joined", flush=True)
-    
-    print(f"Contents of {outdir}: {os.listdir(outdir)}", flush=True)
 
 def loop(init_generation, init_gen_dir, robots, loss, child_robots, child_loss=None):
     global progbar, robots_fname, child_robots_fname, loss_file, child_loss_file
@@ -133,21 +134,21 @@ def loop(init_generation, init_gen_dir, robots, loss, child_robots, child_loss=N
         print("Keyboard interrupt, exiting...", flush=True)
         return
 
-def main_from_ckpt(gen, gen_dir, robots, loss, child_robots):
+def main_from_ckpt(gen, ckptdir, robots_fname, loss_fname, child_robots_fname):
     print(f"Initial generation: {gen}", flush=True)
-    print(f"Initial generation dir: {gen_dir}", flush=True)
-    print(f"Initial robots: {robots}", flush=True)
-    print(f"Initial loss: {loss}", flush=True)
-    print(f"Initial child robots: {child_robots}", flush=True)
+    print(f"Initial generation dir: {ckptdir}", flush=True)
+    print(f"Initial robots: {robots_fname}", flush=True)
+    print(f"Initial loss: {loss_fname}", flush=True)
+    print(f"Initial child robots: {child_robots_fname}", flush=True)
     ## Clean files in partially completed generation directory
-    clean_gen_dir(gen_dir)
+    clean_gen_dir(ckptdir)
     ## Run the main loop
     loop(
         gen, 
-        gen_dir, 
-        robots, 
-        loss, 
-        child_robots, 
+        ckptdir, 
+        robots_fname, 
+        loss_fname, 
+        child_robots_fname
     )
 
 def main_from_0(gen0_dir):
@@ -189,7 +190,7 @@ if __name__ == '__main__':
     parser.add_argument('--outdir', type=str, default='run-out', help='Output directory (default: run-out)')
     parser.add_argument('--ckptdir', type=str, default=None, help='(load from) Checkpoint directory (default: None)')
     parser.add_argument('--gpu_ids', type=str, default="0", help='GPU IDs to parallelize on (comma separated). E.g. "0,1,2,3". (default: 0)')
-    parser.add_argument('--n_robots', type=int, default=100, help='Population size (default: 100). Must be >= 100.')
+    parser.add_argument('--n_robots', type=int, default=100, help='Population size (default: 1000). Must be >= 100.')
     parser.add_argument('--iters', type=int, default=35, help='Number of learning iterations (default: 35)')
     parser.add_argument('--worker_script', type=str, default='./sim.py', help='GPU worker script (default: ./sim.py)')
     parser.add_argument('--no_progbar', default=False, action='store_true', help='Disable progress bar (default: False)')
@@ -205,17 +206,15 @@ if __name__ == '__main__':
         ckptdir = options.ckptdir
         with open(os.path.join(options.ckptdir, 'args.txt'), 'r') as f:
             arg_options = eval(f.read())
-            arg_options['outdir'] = ckptdir
+            arg_options['outdir'] = options.outdir
             arg_options['debug'] = options.debug
             arg_options['no_progbar'] = options.no_progbar
             arg_options['gpu_ids'] = options.gpu_ids
         options.__dict__ = arg_options
 
-        ## Find the latest generation
-        dir_contents = os.listdir(ckptdir)
-        gens = [int(d) for d in dir_contents if d.isdigit()]
-        gen = max(gens)
-    
+        ## Set generation to 35 explicitly
+        gen = 35
+
     ## ...or start from scratch
     else:
         ckptdir = None
@@ -259,10 +258,10 @@ if __name__ == '__main__':
     if ckptdir is not None:
         main_from_ckpt(
             gen, 
-            os.path.join(ckptdir, str(gen)),
-            os.path.join(ckptdir, str(gen), robots_fname),
-            os.path.join(ckptdir, str(gen), loss_file),
-            os.path.join(ckptdir, str(gen), child_robots_fname),
+            ckptdir,
+            os.path.join(ckptdir, robots_fname),
+            os.path.join(ckptdir, loss_file),
+            os.path.join(ckptdir, child_robots_fname)
         )
     ## ...or from scratch
     else:

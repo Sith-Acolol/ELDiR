@@ -7,3 +7,12 @@ n_robots: 100, max_objects: 147, max_springs: 323
 Robot states loaded...
 Initializing weights...
 Optimizing 35 iterations for 1000 steps...
+Traceback (most recent call last):
+  File "C:\Users\samfu\OneDrive\Documents\GitHub\ELDiR\sim.py", line 503, in <module>
+    optimize()
+  File "C:\Users\samfu\OneDrive\Documents\GitHub\ELDiR\sim.py", line 429, in optimize
+    save_weights(weights_dir, save_idx, idx0, f"best")
+  File "C:\Users\samfu\OneDrive\Documents\GitHub\ELDiR\sim.py", line 355, in save_weights
+    with open(os.path.join(dir, str(r+offset), f'{name}.pkl'), "wb") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+OSError: [Errno 22] Invalid argument: 'run-out\\0\\weights\\96\\best.pkl'

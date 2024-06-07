@@ -1,0 +1,1 @@
+{'seed': 1180322801, 'debug': False, 'outdir': 'run-out', 'ckptdir': None, 'gpu_ids': '0', 'n_robots': 100, 'iters': 35, 'worker_script': './sim.py', 'no_progbar': False}

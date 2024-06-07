@@ -1,0 +1,18 @@
+Using CUDA_VISIBLE_DEVICES=0
+[Taichi] Starting on arch=cuda
+Writing losses to run-out-1\37
+Random seed: 781003795
+Loading robots [0, 100) into Taichi from run-out-1\37\child_robots.pkl...
+n_robots: 100, max_objects: 38, max_springs: 74
+Robot states loaded...
+Initializing weights...
+Optimizing 35 iterations for 1000 steps...
+Traceback (most recent call last):
+  File "C:\Users\samfu\OneDrive\Documents\GitHub\ELDiR\sim.py", line 503, in <module>
+    optimize()
+  File "C:\Users\samfu\OneDrive\Documents\GitHub\ELDiR\sim.py", line 429, in optimize
+    save_weights(weights_dir, save_idx, idx0, f"best")
+  File "C:\Users\samfu\OneDrive\Documents\GitHub\ELDiR\sim.py", line 355, in save_weights
+    with open(os.path.join(dir, str(r+offset), f'{name}.pkl'), "wb") as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'run-out-1\\37\\weights\\52\\best.pkl'
