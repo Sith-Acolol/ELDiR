@@ -84,11 +84,6 @@ if not os.path.exists(viz_outdir):
 with open(os.path.join(outdir, str(generation), "robots.pkl"), "rb") as f:
     robots = pickle.load(f)
 
-# Save fully evolved robots
-saved_robots_path = "./evolved_robots.pkl"
-with open(saved_robots_path, "wb") as f:
-    pickle.dump(robots, f)
-
 # %% [markdown]
 # **Select the best**
 
