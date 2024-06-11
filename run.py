@@ -258,7 +258,7 @@ if __name__ == '__main__':
     if ckptdir is not None:
         main_from_ckpt(
             gen, 
-            ckptdir,
+            os.path.join(ckptdir, str(gen)),
             os.path.join(ckptdir, robots_fname),
             os.path.join(ckptdir, loss_file),
             os.path.join(ckptdir, child_robots_fname)

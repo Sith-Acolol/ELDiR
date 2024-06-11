@@ -1,0 +1,20 @@
+Using CUDA_VISIBLE_DEVICES=0
+[Taichi] Starting on arch=cuda
+Writing losses to run-out-3\47
+Random seed: 884737204
+Loading robots [0, 100) into Taichi from run-out-3\47\child_robots.pkl...
+n_robots: 100, max_objects: 34, max_springs: 67
+Robot states loaded...
+Initializing weights...
+Optimizing 35 iterations for 1000 steps...
+Traceback (most recent call last):
+  File "C:\GitHub\ELDiR\sim.py", line 503, in <module>
+    optimize()
+  File "C:\GitHub\ELDiR\sim.py", line 433, in optimize
+    manual_backward()
+  File "C:\GitHub\ELDiR\sim.py", line 384, in manual_backward
+    advance.grad(t)
+  File "C:\Users\samfu\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\LocalCache\local-packages\Python311\site-packages\taichi\lang\kernel_impl.py", line 1045, in __call__
+    return self.launch_kernel(kernel_cpp, *args)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyboardInterrupt
