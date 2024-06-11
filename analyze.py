@@ -146,7 +146,7 @@ plt.axis('off')
 
 
 # %% [markdown]
-# **Command to generate state for dynamic visualization (don't forget to run it!!)**
+# **Command to generate state for dynamic visualization (don't forget to run it!!!)**
 
 # %%
 print(f"python sim.py --outdir {viz_outdir} --robots_file {robot_save_file} --visualize")
