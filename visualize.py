@@ -145,12 +145,11 @@ for t in tqdm(range(0, steps, 2)):
     if ground_file is None:
         plt.hlines(0.0915, x_min, x_max, color='black')
     else:
-        ground = np.load(ground_file)
-        xs, ys, lens, slopes, shifts = ground
-        n_ground_segs = len(xs)
-
-        for i in range(n_ground_segs):
-            plt.plot([xs[i], xs[i] + lens[i]], [ys[i], ys[i] + lens[i] * slopes[i]], 'b')
+        x_samples, y_samples = np.load(ground_file, allow_pickle=True)
+        xs = np.linspace(min(x_samples), max(x_samples), 500)
+        ys = np.interp(xs, x_samples, y_samples)
+       
+        plt.plot(xs, ys, label="Interpolated Ground", color='b', linestyle='-')
 
         plt.xlim(-0.5, 2.5)
         plt.ylim(0, 1)
